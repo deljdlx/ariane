@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <script src="source/javascript/Labyrinth.js"></script>
+        <script src="source/javascript/Path.js"></script>
+        <script src="source/javascript/Cell.js"></script>
+
+
+        <script src="source/javascript/TableRenderer.js"></script>
+
+        <link rel="stylesheet" href="source/css/labyrinth.css">
+    </head>
+
+    <body>
+        
+    </body>
+
+    <script>
+
+        const test = new Labyrinth(33,33);
+        test.generate();
+
+        const renderer = new TableRenderer(test);
+
+        renderer.render(document.body);
+
+    </script>
+
+
+
+
+</html>

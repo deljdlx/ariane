@@ -1,0 +1,42 @@
+
+.ariane.labyrinth {
+    border-collapse: collapse;
+}
+    
+
+.ariane.labyrinth .ariane.cell {
+
+    /*border: solid 1px #CCC;*/
+    background-color: #424874;
+    width: 24px;
+    height: 24px;
+}
+
+
+.ariane.labyrinth .ariane.cell.path {
+    background-color:#D6E5E3;
+}
+
+/*
+.ariane.labyrinth .ariane.cell.path.noise0 {
+    background-color:#AAA;
+}
+.ariane.labyrinth .ariane.cell.path.noise1 {
+    background-color:#CCC;
+}
+.ariane.labyrinth .ariane.cell.path.noise2 {
+    background-color:#EEE;
+}
+
+
+.ariane.labyrinth .ariane.cell.path.path-main {
+    background-color:#AFF;
+}
+
+.ariane.labyrinth .ariane.cell.path.closest {
+    background-color:#F00;
+}
+
+
+*/
+
