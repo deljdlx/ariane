@@ -26,7 +26,7 @@ class TableRenderer
         td.dataset.x = x;
         td.dataset.y = y;
         td.dataset.coord = x+'-'+y;
-        //td.innerHTML = x+'-'+y;
+        td.innerHTML = x+'-'+y;
 
         const cell = this.labyrinth.cell(x, y);
         if(cell.isPath()) {
