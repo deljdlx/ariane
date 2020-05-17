@@ -26,7 +26,6 @@ class Matrix extends Free
       }
     }
 
-    console.log(this.matrix);
   }
 
 
@@ -73,11 +72,45 @@ class Matrix extends Free
       }
     }
 
+    const scene = this.viewport.getScene();
+    scene.style.width = this.getOffsetWidth() + 'px';
+    scene.style.height = this.getOffsetHeight() + 'px';
+    
+    //(this.getOffsetWidth()/2, this.getOffsetHeight()/2, 0);
+
     this.generateBorders();
+    this.generateAxes();
 
     super.generate(container);
     return;
   }
+
+  getOffsetWidth() {
+    return this.width * this.cellSize;
+  }
+
+
+  getOffsetHeight() {
+    return this.height * this.cellSize;
+  }
+
+
+
+  generateAxes() {
+    let zAxe = new Cuboid(4, 4, 4000);
+    this.viewport.addItem(zAxe, this.getOffsetWidth()/2, this.getOffsetHeight()/2, 2000);
+
+
+    let xAxe = new Cuboid(4000, 4, 4);
+    this.viewport.addItem(xAxe, -2000, this.getOffsetHeight()/2, 0);
+
+    let yAxe = new Cuboid(4, 4000, 4);
+    this.viewport.addItem(yAxe, this.getOffsetWidth()/2, -2000, 0);
+
+
+  }
+
+
 
   generateBorders() {
 

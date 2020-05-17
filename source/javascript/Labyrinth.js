@@ -68,11 +68,13 @@ class Labyrinth
     path0.generate();
     this.pathes.push(path0);
 
+
     this.end = saveEnd;
     let path1 = new Path(this, this.getStart(), this.end);
-    path1.setCssClass('path-main')
+    path1.setCssClass('path-main2')
     path1.generate();
     this.pathes.push(path1);
+
 
     if(path1.isValid()) {
       console.log("SUCCESS");
@@ -111,7 +113,10 @@ class Labyrinth
       target.addCssClass('closest')
 
       let newPath = new Path(this, target, this.getEnd());
+      newPath.setCssClass('closing-path');
       newPath.generate();
+
+
       if(path.isValid()) {
         console.log("SUCCESS");
         break;

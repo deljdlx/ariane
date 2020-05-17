@@ -47,15 +47,15 @@
 
             
             const viewport = new Viewport(document.body);
-            const matrix = new Matrix(16, 16);
-            matrix.width = 16;
-            matrix.height = 16;
+            const matrix = new Matrix(34, 34);
+            matrix.width = 34;
+            matrix.height = 34;
             viewport.setBoard(matrix);
 
-            const test = new Labyrinth(16,16);
+            const test = new Labyrinth(34,34);
             test.generate();
 
-
+            /*
 
             let data = test.getMatrix();
 
@@ -67,11 +67,11 @@
                     }
                 }
             }
-
             viewport.generate();
+            */
 
-            //const renderer = new TableRenderer(test);
-            //renderer.render(document.body);
+            const renderer = new TableRenderer(test);
+            renderer.render(document.body);
         </script>
 
     </body>

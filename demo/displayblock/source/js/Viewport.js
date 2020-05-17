@@ -5,40 +5,39 @@ class Viewport
 
     items = [];
 
+    states = {
+        drag: {
+            enable: false,
+            left: null,
+            top: null
+        },
+        rotation: {
+            enable: false,
+            rotationX: null,
+            rotationY: null,
+            rotationZ:null
+        }
+    };
+
+    unit = 'px';
+
+
+    zoom = 100;
+    perspective = 1600;
+
+    translation = 0;
+    rotationX = 45;
+    rotationY = 0;
+    rotationZ = 45;
+    transformOrigin = '50% 50% 0';
+
+    left = 0;
+    top = 0;
+
+
+
     constructor(container)
     {
-        this.states = {
-            drag: {
-                enable: false,
-                left: null,
-                top: null
-            },
-            rotation: {
-                enable: false,
-                left: null,
-                top: null
-            }
-        };
-
-
-
-        this.unit = 'px';
-
-
-        this.zoom = 100;
-        this.perspective = 1600;
-
-        this.translation = -1200;
-        this.rotationX = 45;
-        this.rotationY = 0;
-        this.rotationZ = 45;
-
-
-        this.left = 0;
-        this.top = 0;
-
-        //this.width = width;
-        //this.height = height;
 
         this.container = container;
 
@@ -55,8 +54,6 @@ class Viewport
         this.applyTransformations();
         
         this.layout.appendChild(this.element);
-
-        
 
         this.board = new Free(this);
 
@@ -99,11 +96,15 @@ class Viewport
         }
         else if(this.states.rotation.enable) {
 
-            
+            let xDelta = (evt.clientX - this.states.rotation.left); // (this.perspective / 20);
+            let yDelta = (evt.clientY - this.states.rotation.top); // (this.perspective / 20);
 
-            let xDelta = (evt.clientX - this.states.drag.left); // (this.perspective / 20);
-            let yDelta = (evt.clientY - this.states.drag.top); // (this.perspective / 20);
-            this.rotationZ = xDelta/10;
+
+            this.rotationZ = Math.round(this.states.rotation.rotationZ + xDelta/10);
+            this.rotationX = Math.round(this.states.rotation.rotationX + yDelta/10);
+
+            console.log(xDelta, yDelta);
+            console.log(this.rotationZ, this.rotationX);
 
             this.applyTransformations();
         }
@@ -113,8 +114,6 @@ class Viewport
         console.log('drag-start');
         evt.preventDefault();
 
-        console.log(evt.which);
-
         if(evt.which == 1) {
             this.states.drag.enable = true;
             this.states.drag.left = evt.clientX - this.left;
@@ -122,8 +121,15 @@ class Viewport
         }
         else if(evt.which == 3) {
             this.states.rotation.enable = true;
-            this.states.rotation.left = evt.clientX - this.left;
-            this.states.rotation.top = evt.clientY - this.top;
+
+            this.states.rotation.left = evt.clientX;
+            this.states.rotation.top = evt.clientY;
+
+            this.states.rotation.rotationX = this.rotationX;
+            this.states.rotation.rotationY = this.rotationY;
+            this.states.rotation.rotationZ = this.rotationZ;
+
+            console.log(this.states.rotation);
         }
 
     }
@@ -138,6 +144,9 @@ class Viewport
         this.states.rotation.enable = false;
         this.states.rotation.left = null;
         this.states.rotation.top = null;
+        this.states.rotation.rotationX = this.rotationX;
+        this.states.rotation.rotationY = this.rotationY;
+        this.states.rotation.rotationZ = this.rotationZ;
     }
     
 
@@ -150,20 +159,36 @@ class Viewport
         else {
             this.translate(70);
         }
+
+
         this.applyTransformations();
     }
 
     translate(value) {
         this.translation += value;
+
+
+        this.element.style.transformOrigin = '50% 50% ' + (this.translation * -1) + 'px';
+        //this.element.style.transformOrigin = '50% 50% 0';
+
+
         this.applyTransformations();
     }
 
     applyTransformations()
     {
-        this.element.style.zoom = this.zoom + '%';
+        
 
         this.layout.style.left = this.left + this.unit;
         this.layout.style.top = this.top + this.unit;
+
+
+        console.log(this.element.style.transformOrigin);
+
+
+        this.element.style.zoom = this.zoom + '%';
+
+        this.element.style.transformOrigin = this.transformOrigin;
 
         this.element.style.transform = `
             perspective(` +this.perspective + this.unit + `)
@@ -174,6 +199,10 @@ class Viewport
             translateX(` +this.translation + this.unit + `)
             translateY(` +this.translation + this.unit + `)
         `;
+    }
+
+    getScene() {
+        return this.element;
     }
 
     generate() {
@@ -194,4 +223,12 @@ class Viewport
     randomize() {
       this.board.randomize();
     }
+
+
+
+    setTransformOrigin(x, y, z) {
+        this.transformOrigin = x + ' ' + y + ' ' + z;
+    }
+
+
 }

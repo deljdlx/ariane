@@ -32,89 +32,6 @@ class Path
     return this.finished(this.path[this.path.length-1]);
   }
 
-  mergePath(path) {
-    this.currentCell = this.start;
-    let noLoop = 0;
-    const maxLoop = this.labyrinth.getHeight() * this.labyrinth.getWidth();
-
-    while(!this.merged(path, this.currentCell)) {
-      
-      this.registerCell(this.currentCell)
-      
-      this.end = path.closest(this.currentCell);
-
-      let next = this.findForMerge(path, this.currentCell);
-      
-      if(!next) {
-        return false;
-      }
-      else {
-        this.currentCell = next;
-      }
-      noLoop++;
-      if(noLoop >= maxLoop) {
-        console.log('maxLoop');
-        return false;
-      }
-    }
-    this.registerCell(this.currentCell)
-
-    return true;
-  }
-
-
-  findForMerge(path, cell) {
-    let x = cell.getX();
-    let y = cell.getY();
-    let possibleCells = [];
-
-
-    console.log(this.cell(1,1));
-
-    if(this.cellExists(x-1, y)) {
-      console.log('yoooo');
-      let nextCell = this.labyrinth.cell(x-1,y);
-      console.log(nextCell);
-      if(path.exists(nextCell)) {
-        
-        return nextCell;
-      }
-    }
-
-    if(this.cellExists(x+1, y)) {
-      
-      let nextCell = this.labyrinth.cell(x+1,y);
-      console.log(nextCell);
-      if(path.exists(nextCell)) {
-        
-        return nextCell;
-      }
-    }
-
-    if(this.cellExists(x, y-1)) {
-      console.log('yoooo');
-      let nextCell = this.labyrinth.cell(x,y-1);
-      console.log(nextCell);
-      if(path.exists(nextCell)) {
-        
-        return nextCell;
-      }
-    }
-
-    if(this.cellExists(x, y+1)) {
-      let nextCell = this.labyrinth.cell(x,y+1);
-      if(path.exists(nextCell)) {
-        console.log('yoooo');
-        console.log(nextCell);
-        return nextCell;
-      }
-    }
-
-    return this.findNext(cell);
-  }
-
-
-
 
   exists(cell) {
     console.log(cell.getKey())
@@ -123,15 +40,6 @@ class Path
     }
     return false;
   }
-
-  merged(path, currentCell) {
-    if(path.exists(currentCell)) {
-      return true;
-    }
-    return false;
-  }
-
-
 
 
   generate() {
@@ -164,8 +72,6 @@ class Path
   }
 
 
-
-
   registerCell(cell) {
     cell.isPath(true);
     cell.addCssClass(this.cssClass)
@@ -193,7 +99,7 @@ class Path
 
     if(this.isCellValid(x-1, y)) {
       let cell = this.labyrinth.cell(x-1, y);
-      if(cell.getX() == this.end.getX() && cell.getY()) {
+      if(cell.getX() == this.end.getX() && cell.getY() == this.end.getY()) {
         return cell;
       }
       possibleCells.push(cell);
@@ -201,7 +107,7 @@ class Path
 
     if(this.isCellValid(x+1, y)) {
       let cell = this.labyrinth.cell(x+1, y);
-      if(cell.getX() == this.end.getX() && cell.getY()) {
+      if(cell.getX() == this.end.getX() && cell.getY() == this.end.getY()) {
         return cell;
       }
       possibleCells.push(cell);
@@ -209,7 +115,8 @@ class Path
 
     if(this.isCellValid(x, y-1)) {
       let cell = this.labyrinth.cell(x, y-1);
-      if(cell.getX() == this.end.getX() && cell.getY()) {
+      if(cell.getX() == this.end.getX() && cell.getY() == this.end.getY()) {
+        cell.addCssClass('to-top')
         return cell;
       }
       possibleCells.push(cell);
@@ -217,7 +124,8 @@ class Path
 
     if(this.isCellValid(x, y+1)) {
       let cell = this.labyrinth.cell(x, y+1);
-      if(cell.getX() == this.end.getX() && cell.getY()) {
+      if(cell.getX() == this.end.getX() && cell.getY() == this.end.getY()) {
+        cell.addCssClass('to-bottom')
         return cell;
       }
       possibleCells.push(cell);
@@ -234,17 +142,6 @@ class Path
   }
 
 
-  getNewStart() {
-
-    for(let index = this.path.length-1 ; index >= 0 ; index--) {
-      const cell = this.path[index];
-      this.currentIndex = index;
-      if(!cell.isLocked()) {
-        return cell;
-      }
-    }
-    return false;
-  }
 
   closest(target) {
     let closest = null;
@@ -285,9 +182,6 @@ class Path
 
     return farest;
   }
-
-
-
 
 
 
@@ -355,7 +249,6 @@ class Path
 
   
 
-
   finished(cell) {
     if(cell.getX() == this.end.getX() && cell.getY() == this.end.getY()) {
       return true;
@@ -378,6 +271,6 @@ class Path
         array[j] = x;
     }
     return array;
-}
+  }
   
 }
