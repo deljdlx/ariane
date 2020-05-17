@@ -11,10 +11,17 @@
  }
 
 
+
+ .cuboid.animated .cuboid-side {
+    transition: all 0.5s;
+ }
+
+
 .cuboid .cuboid-side {
     background-color: rgba(200,200,200, 0.7);
     border: solid 1px #333;
-    transition : all 0.5s;
+
+
     transform-style: preserve-3d;
     box-sizing: border-box;
     position: absolute;
@@ -22,9 +29,13 @@
 }
 
 
+/*
 .cuboid:hover .cuboid-side {
     border: solid 3px #333;
 }
+*/
+
+
 
 .cuboid .cuboid-side-top {
     

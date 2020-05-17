@@ -6,6 +6,7 @@ class Matrix extends Free
   height = 16;
 
 
+  _optimize = true;
   matrix = {};
 
 
@@ -25,7 +26,14 @@ class Matrix extends Free
         this.matrix[x][y] = false;
       }
     }
+  }
 
+  optimize(value = null) {
+    if(value !== null) {
+      this._optimize = value;
+      return this;
+    }
+    return this._optimize;
   }
 
 
@@ -55,7 +63,122 @@ class Matrix extends Free
     return false;
   }
 
+
+  generateOptimized(container) {
+    this.generateBackground();
+
+
+
+    //!row optimisation=============================================================
+
+    for(let y = 0 ; y < this.height ; y++) {
+
+      let left = null;
+      let top = null;
+      let segmentLength = 0;
+
+      for(let x = 0 ; x < this.width ; x++) {
+
+        
+
+        if(this.enabled(x, y)) {
+          segmentLength++;
+          if(left === null) {
+            left = (x) * parseInt(this.cellSize);
+          }
+          if(segmentLength > 1) {
+            this.enable(x, y, 2);
+            this.enable(x - 1, y, 2);
+          }
+          
+        }
+        else {
+
+          if(left !== null && segmentLength > 1) {
+            top =  y * parseInt(this.cellSize);
+            let width = segmentLength * this.cellSize;
+            let cube = new Cuboid(width, this.cellSize, this.cellSize);
+            this.viewport.addItem(cube, left, top, this.cellSize);
+          }
+          segmentLength = 0;
+          left = null;
+        }
+      }
+
+      if(left !== null && segmentLength > 1) {
+
+        top =  y * parseInt(this.cellSize);
+        let width = segmentLength * this.cellSize;
+        let cube = new Cuboid(width, this.cellSize, this.cellSize);
+
+        this.viewport.addItem(cube, left, top, this.cellSize);
+        segmentLength = 0;
+        left = null;
+      }
+    }
+    //!================================================================================
+
+
+
+    //!cols optimisation=============================================================
+
+    for(let x = 0 ; x < this.width ; x++) {
+      let top = null;
+      let segmentLength = 0;
+
+      for(let y = 0 ; y < this.height ; y++) {
+
+        if(this.enabled(x, y) !== false && this.enabled(x, y) !== 2) {
+          if(top === null) {
+            top = y * parseInt(this.cellSize);
+          }
+          segmentLength++;
+        }
+        else {
+          if(top !== null) {
+
+            let left = x * this.cellSize;
+            let height = segmentLength * this.cellSize;
+
+            let cube = new Cuboid(this.cellSize, height, this.cellSize);
+            this.viewport.addItem(cube, left, top, this.cellSize);
+          }
+          segmentLength = 0;
+          top = null;
+        }
+      }
+      if(top !== null) {
+
+        let left = x * this.cellSize;
+        let height = segmentLength * this.cellSize;
+
+        let cube = new Cuboid(this.cellSize, height, this.cellSize);
+        this.viewport.addItem(cube, left, top, this.cellSize);
+        segmentLength = 0;
+        top = null;
+      }
+    }
+
+
+    const scene = this.viewport.getScene();
+    scene.style.width = this.getOffsetWidth() + 'px';
+    scene.style.height = this.getOffsetHeight() + 'px';
+
+
+    this.generateBorders();
+    this.generateAxes();
+
+    super.generate(container);
+    return;
+  }
+
+
   generate(container) {
+
+    if(this.optimize()) {
+      return this.generateOptimized(container);
+    }
+
 
     this.generateBackground();
 
@@ -82,7 +205,7 @@ class Matrix extends Free
     this.generateAxes();
 
     super.generate(container);
-    return;
+    return this;
   }
 
   getOffsetWidth() {
@@ -98,14 +221,17 @@ class Matrix extends Free
 
   generateAxes() {
     let zAxe = new Cuboid(4, 4, 4000);
+    zAxe.classList.add('axe');
     this.viewport.addItem(zAxe, this.getOffsetWidth()/2, this.getOffsetHeight()/2, 2000);
 
 
     let xAxe = new Cuboid(4000, 4, 4);
-    this.viewport.addItem(xAxe, -2000, this.getOffsetHeight()/2, 0);
+    xAxe.classList.add('axe');
+    this.viewport.addItem(xAxe, -2000 + this.getOffsetWidth() / 2, this.getOffsetHeight()/2, 0);
 
     let yAxe = new Cuboid(4, 4000, 4);
-    this.viewport.addItem(yAxe, this.getOffsetWidth()/2, -2000, 0);
+    yAxe.classList.add('axe');
+    this.viewport.addItem(yAxe, this.getOffsetWidth()/2, -2000 + this.getOffsetHeight() / 2, 0);
 
 
   }
@@ -114,23 +240,30 @@ class Matrix extends Free
 
   generateBorders() {
 
+    const heightMultiplicator = 0.5;
+    const sideWeight = 0.5;
 
-    let topSide = new Cuboid(this.cellSize * this.width, this.cellSize, this.cellSize);
-    let top =  -1 * parseInt(this.cellSize);
-    this.viewport.addItem(topSide, 0, top, this.cellSize);
+    let topSide = new Cuboid(this.cellSize * this.width, this.cellSize * sideWeight, this.cellSize * heightMultiplicator);
+    let top =  -1 * parseInt(this.cellSize * sideWeight);
+    topSide.classList.add('matrix-border');
+    this.viewport.addItem(topSide, 0, top, this.cellSize * heightMultiplicator);
 
-    let bottomSide = new Cuboid(this.cellSize * this.width, this.cellSize, this.cellSize);
+
+    let bottomSide = new Cuboid(this.cellSize * this.width, this.cellSize * sideWeight, this.cellSize * heightMultiplicator);
     top =  (this.height) * parseInt(this.cellSize);
-    this.viewport.addItem(bottomSide, 0, top, this.cellSize);
+    bottomSide.classList.add('matrix-border');
+    this.viewport.addItem(bottomSide, 0, top, this.cellSize * heightMultiplicator);
 
 
-    let leftSide = new Cuboid(this.cellSize, this.cellSize * (this.height + 2), this.cellSize);
-    top =  -1 * parseInt(this.cellSize);
-    this.viewport.addItem(leftSide, this.cellSize * -1, top, this.cellSize);
+    let leftSide = new Cuboid(this.cellSize * sideWeight, this.cellSize * (this.height + 1), this.cellSize * heightMultiplicator);
+    top =  -1 * parseInt(this.cellSize) * sideWeight;
+    leftSide.classList.add('matrix-border');
+    this.viewport.addItem(leftSide, this.cellSize * -1 * sideWeight, top, this.cellSize * heightMultiplicator);
 
-    let rightSide = new Cuboid(this.cellSize, this.cellSize * (this.height + 2), this.cellSize);
-    top =  -1 * parseInt(this.cellSize);
-    this.viewport.addItem(rightSide, this.width * this.cellSize, top, this.cellSize);
+    let rightSide = new Cuboid(this.cellSize * sideWeight, this.cellSize * (this.height + 1), this.cellSize * heightMultiplicator);
+    top =  -1 * parseInt(this.cellSize) * sideWeight;
+    rightSide.classList.add('matrix-border');
+    this.viewport.addItem(rightSide, this.width * this.cellSize, top, this.cellSize * heightMultiplicator);
 
 
 

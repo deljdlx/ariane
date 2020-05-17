@@ -3,6 +3,10 @@ class Item
   id = null;
   generated = false;
 
+
+
+  _animated = false;
+
   wrapper = null;
   element = null;
 
@@ -26,6 +30,9 @@ class Item
   transitionDuration = 500;
   transitionDurationUnit = 'ms';
 
+
+  element = null;
+
   constructor(id)
   {
 
@@ -39,8 +46,26 @@ class Item
     this.element = document.createElement('div');
     this.element.classList.add('item');
 
+    this.classList = this.element.classList;
+
+
     this.wrapper.appendChild(this.element);
   }
+
+  
+  animate(value) {
+    this._animated = value;
+    if(value) {
+      this.element.classList.add('animated');
+    }
+    else {
+      this.element.classList.remove('animated');
+    }
+    return this;
+  }
+
+
+
 
   draw() {
 

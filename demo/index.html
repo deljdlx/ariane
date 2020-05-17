@@ -5,15 +5,80 @@
 
 
         <link rel="stylesheet" href="./displayblock/source/css/style.css" />
-        <link rel="stylesheet" href="./displayblock/source/css/Board.css" />
+        <link rel="stylesheet" href="./displayblock/source/css/Scene.css" />
+
         <link rel="stylesheet" href="./displayblock/source/css/Item.css" />
         <link rel="stylesheet" href="./displayblock/source/css/Cube.css" />
         <link rel="stylesheet" href="./displayblock/source/css/Cuboid.css" />
-        <link rel="stylesheet" href="./displayblock/source/css/Player.css" />
-        <link rel="stylesheet" href="./displayblock/source/css/theme/licornie/Cube.css" />
-        
 
-        <link rel="stylesheet" href="../source/css/labyrinth.css">
+        <link rel="stylesheet" href="./displayblock/source/css/Board.css" />
+        <link rel="stylesheet" href="./displayblock/source/css/Matrix.css" />
+
+        <link rel="stylesheet" href="../source/css/labyrinth.css" />
+
+
+        <style>
+
+            body {
+                background-color: #94B88E;
+            }
+
+            .perspective {
+                border: 5px rgba(255,255,255, 0.9) dashed;
+                border-radius : 50%;
+            }
+
+            .board-background {
+                background-image: url(https://lh5.googleusercontent.com/5yV6Q_UelW3AEuQIg8Aa8H_niM8_1qpfNz_MrXMcCGg1SJiGh-EbV-HdykFQo6Z_BwNlu92paiw22ld7y7aZHb6dA9FM3C5Rhowos1QHQYKGQit1zR7XuoCpKZp3a3O7);
+            }
+
+
+            .item-wrapper {
+                transition: none;
+            }
+
+            .item.cuboid.matrix-border .cuboid-side {
+                border: solid 1px #000;
+                background-color:#CCC;
+                background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQeAj7BfVyoM_NVqOlEoBJ6d9PUCf6o4AXIwMBV1yOZFxBi_8vU&usqp=CAU);
+            }
+            .item.cuboid.matrix-border .cuboid-side.cuboid-side-top {
+                /*background-image: url(https://opengameart.org/sites/default/files/grass_14.png);*/
+            }
+
+
+            .item.cuboid.matrix-border .cuboid-side.cuboid-side-bottom {
+                box-shadow: 0 0 20px 10px rgba(0,0,0, 1);
+            }
+            
+
+
+            .cuboid .cuboid-side {
+                border: solid 2px #CEC;
+                background-color:#ADA;
+                background-image: url(https://www.azutura.com/media/catalog/product/cache/49/image/650x/040ec09b1e35df139433887a97daa66f/W/S/WS-47229_WP.jpg);
+            }
+
+            .cuboid .cuboid-side.cuboid-side-bottom {
+                box-shadow: 0 0 20px 10px rgba(0,0,0, 1);
+            }
+
+            .cuboid .cuboid-side.cuboid-side-top {
+                background-image: url(https://4.bp.blogspot.com/-ggkSFkq3ky4/UXO1HwBEtZI/AAAAAAAAM9M/JuxFjeDrJwk/s1600/Sprite_FX_Grass_0001.png);
+                
+            }
+
+
+
+            .item.cuboid.axe .cuboid-side {
+                box-shadow: none !important;
+                background-color:rgba(255,255,255,0.8);
+                background-image: none;
+                border: none;
+            }
+
+
+        </style>
     </head>
 
     <body>
@@ -45,17 +110,18 @@
 
         <script>
 
+
+            const size = 24;
             
             const viewport = new Viewport(document.body);
-            const matrix = new Matrix(34, 34);
-            matrix.width = 34;
-            matrix.height = 34;
+            const matrix = new Matrix(size, size);
+            //matrix.width = 16;
+            //matrix.height = 16;
             viewport.setBoard(matrix);
 
-            const test = new Labyrinth(34,34);
+            const test = new Labyrinth(size, size);
             test.generate();
 
-            /*
 
             let data = test.getMatrix();
 
@@ -68,10 +134,14 @@
                 }
             }
             viewport.generate();
-            */
+            viewport.translate(-3000);
+            viewport.setRotation(0,0,0);
+            viewport.setPosition();
 
-            const renderer = new TableRenderer(test);
-            renderer.render(document.body);
+
+
+            //const renderer = new TableRenderer(test);
+            //renderer.render(document.body);
         </script>
 
     </body>

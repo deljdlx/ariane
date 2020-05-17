@@ -29,11 +29,16 @@ class Viewport
     rotationX = 45;
     rotationY = 0;
     rotationZ = 45;
+
     transformOrigin = '50% 50% 0';
 
     left = 0;
     top = 0;
+    
 
+    container = null;
+    layout = null;
+    scene = null;
 
 
     constructor(container)
@@ -45,15 +50,15 @@ class Viewport
         this.layout.classList.add('layout');
 
 
-        this.element = document.createElement('div');
-        this.element.classList.add('perspective');
+        this.scene = document.createElement('div');
+        this.scene.classList.add('perspective');
 
-        this.element.style.left = (document.body.offsetWidth / 2) + this.unit;
-        this.element.style.top = (document.body.offsetHeight / 3) + this.unit  ;
+        //this.scene.style.left = (document.body.offsetWidth / 2) + this.unit;
+        //this.scene.style.top = (document.body.offsetHeight / 3) + this.unit  ;
 
         this.applyTransformations();
         
-        this.layout.appendChild(this.element);
+        this.layout.appendChild(this.scene);
 
         this.board = new Free(this);
 
@@ -99,12 +104,8 @@ class Viewport
             let xDelta = (evt.clientX - this.states.rotation.left); // (this.perspective / 20);
             let yDelta = (evt.clientY - this.states.rotation.top); // (this.perspective / 20);
 
-
-            this.rotationZ = Math.round(this.states.rotation.rotationZ + xDelta/10);
+            this.rotationZ = Math.round(this.states.rotation.rotationZ + xDelta / 10);
             this.rotationX = Math.round(this.states.rotation.rotationX + yDelta/10);
-
-            console.log(xDelta, yDelta);
-            console.log(this.rotationZ, this.rotationX);
 
             this.applyTransformations();
         }
@@ -137,6 +138,8 @@ class Viewport
     dragStop(evt) {
         console.log('drag-stop');
         evt.preventDefault();
+
+
         this.states.drag.enable = false;
         this.states.drag.left = null;
         this.states.drag.top = null;
@@ -165,11 +168,16 @@ class Viewport
     }
 
     translate(value) {
+
         this.translation += value;
 
 
-        this.element.style.transformOrigin = '50% 50% ' + (this.translation * -1) + 'px';
+        this.transformOrigin = '50% 50% ' + (this.translation * -1) + 'px';
+        this.top += value/5;
+        this.left += value/6;
+        //this.transformOrigin = '50% ' + (this.translation * -1) + 'px ' + (this.translation * -1) + 'px ';
         //this.element.style.transformOrigin = '50% 50% 0';
+
 
 
         this.applyTransformations();
@@ -182,27 +190,30 @@ class Viewport
         this.layout.style.left = this.left + this.unit;
         this.layout.style.top = this.top + this.unit;
 
+        //!no change on zoom for the moment
+        //this.element.style.zoom = this.zoom + '%';
 
-        console.log(this.element.style.transformOrigin);
+        //this.scene.style.transformOrigin = this.transformOrigin;
 
-
-        this.element.style.zoom = this.zoom + '%';
-
-        this.element.style.transformOrigin = this.transformOrigin;
-
-        this.element.style.transform = `
+        this.scene.style.transform = `
             perspective(` +this.perspective + this.unit + `)
+            translateZ(` +this.translation + this.unit + `)
+        `;
+
+
+        if(this.board) {
+            this.board.getElement().style.transform = `
             rotateX(` + this.rotationX + `deg)
             rotateY(` + this.rotationY + `deg)
             rotateZ(` + this.rotationZ + `deg)
-            translateZ(` +this.translation + this.unit + `)
-            translateX(` +this.translation + this.unit + `)
-            translateY(` +this.translation + this.unit + `)
         `;
+        }
+
+
     }
 
     getScene() {
-        return this.element;
+        return this.scene;
     }
 
     generate() {
@@ -212,9 +223,23 @@ class Viewport
         this.container.appendChild(this.layout);
         
         this.board.generate(
-            this.element
+            this.scene
         );
+        let scene = this.getScene();
+        this.applyTransformations();
     }
+
+
+
+
+    setRotation(x, y, z) {
+        this.rotationX = x;
+        this.rotationY = y;
+        this.rotationZ = z;
+        this.applyTransformations();
+    }
+
+
 
     getBoard() {
         return this.board;

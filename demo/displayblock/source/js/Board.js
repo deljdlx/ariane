@@ -19,6 +19,9 @@ class Board
   }
 
 
+  getElement() {
+    return this.element;
+  }
 
   setViewport(viewport) {
     this.viewport = viewport;

@@ -97,8 +97,11 @@ class Cuboid extends Item
     this.frontElement.style.height = this.depth + this.unit;
     //this.frontElement.style.transform = 'translateZ(' + this.depth  + this.unit + ')';
 
+
+    
     this.rightElement.style.width = this.depth + this.unit;
     this.rightElement.style.height = this.height+ this.unit;
+    
     //this.rightElement.style.transform = 'translateZ(' + this.depth  + this.unit + ')';
     
     this.leftElement.style.width = this.depth + this.unit;
